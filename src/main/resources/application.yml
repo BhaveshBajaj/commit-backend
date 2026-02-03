@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: commit
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://aws-1-ap-south-1.pooler.supabase.com:5432/postgres?sslmode=require}
+    username: ${DB_USERNAME:postgres.fuuciatooaawrnkupjms}
+    password: ${DB_PASSWORD:bhavesh@Commit}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: ${SHOW_SQL:false}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: ${PORT:8080}
+
+# Firebase configuration
+firebase:
+  credentials:
+    path: ${FIREBASE_CREDENTIALS_PATH:firebase-service-account.json}
+    json: ${FIREBASE_CREDENTIALS_JSON:}
