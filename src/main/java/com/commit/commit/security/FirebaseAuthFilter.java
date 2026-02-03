@@ -3,6 +3,7 @@ package com.commit.commit.security;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,7 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-@Order(1)
+@Order(Ordered.HIGHEST_PRECEDENCE + 1) // Run AFTER CORS filter
 public class FirebaseAuthFilter extends OncePerRequestFilter {
 
     private final FirebaseAuth firebaseAuth;
@@ -30,46 +31,15 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
         this.userRepository = userRepository;
     }
 
-    private static final java.util.List<String> ALLOWED_ORIGINS = java.util.Arrays.asList(
-        "https://commit-nu.vercel.app"
-    );
-    
-    private static final java.util.List<String> ALLOWED_ORIGIN_PATTERNS = java.util.Arrays.asList(
-        "http://localhost:",
-        "https://.*\\.vercel\\.app"
-    );
-    
-    private boolean isOriginAllowed(String origin) {
-        if (origin == null) return false;
-        if (ALLOWED_ORIGINS.contains(origin)) return true;
-        for (String pattern : ALLOWED_ORIGIN_PATTERNS) {
-            if (origin.matches(pattern) || origin.startsWith(pattern.replace(".*", "").replace("\\", ""))) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // Skip this filter entirely for OPTIONS requests - let Spring handle CORS
+        return "OPTIONS".equalsIgnoreCase(request.getMethod());
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        
-        String origin = request.getHeader("Origin");
-        
-        // Allow OPTIONS requests (CORS preflight) to pass through without authentication
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            // Add CORS headers explicitly for OPTIONS requests
-            if (isOriginAllowed(origin)) {
-                response.setHeader("Access-Control-Allow-Origin", origin);
-                response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
-                response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, Origin, X-Requested-With");
-                response.setHeader("Access-Control-Allow-Credentials", "true");
-                response.setHeader("Access-Control-Max-Age", "3600");
-            }
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().flush();
-            return;
-        }
         
         String authHeader = request.getHeader("Authorization");
 
