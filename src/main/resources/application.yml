@@ -3,12 +3,12 @@ spring:
     name: commit
 
   datasource:
-    url: jdbc:postgresql://aws-1-ap-south-1.pooler.supabase.com:5432/postgres?sslmode=require&pgbouncer=true
-    username: postgres.fuuciatooaawrnkupjms
+    url: jdbc:postgresql://db.fuuciatooaawrnkupjms.supabase.co:5432/postgres?sslmode=require
+    username: postgres
     password: bhavesh@Commit
     hikari:
-      maximum-pool-size: 3
-      minimum-idle: 1
+      maximum-pool-size: 5
+      minimum-idle: 2
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000

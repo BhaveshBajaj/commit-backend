@@ -18,11 +18,11 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOriginPatterns(
                     "http://localhost:*",
-                    "https://*.vercel.app"
+                    "https://*.vercel.app",
+                    "https://commit-nu.vercel.app"
                 )
-                .allowedOrigins("https://commit-nu.vercel.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
-                .allowedHeaders("*")
+                .allowedHeaders("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With")
                 .exposedHeaders("Authorization")
                 .allowCredentials(true)
                 .maxAge(3600);
@@ -33,11 +33,11 @@ public class WebConfig implements WebMvcConfigurer {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(Arrays.asList(
             "http://localhost:*",
-            "https://*.vercel.app"
+            "https://*.vercel.app",
+            "https://commit-nu.vercel.app"
         ));
-        configuration.setAllowedOrigins(Arrays.asList("https://commit-nu.vercel.app"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
