@@ -3,14 +3,14 @@ spring:
     name: commit
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://aws-1-ap-south-1.pooler.supabase.com:5432/postgres?sslmode=require}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres.fuuciatooaawrnkupjms}
-    password: ${SPRING_DATASOURCE_PASSWORD:bhavesh@Commit}
+    url: jdbc:postgresql://aws-1-ap-south-1.pooler.supabase.com:5432/postgres?sslmode=require
+    username: postgres.fuuciatooaawrnkupjms
+    password: bhavesh@Commit
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: ${SHOW_SQL:false}
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -21,5 +21,5 @@ server:
 # Firebase configuration
 firebase:
   credentials:
-    path: ${FIREBASE_CREDENTIALS_PATH:firebase-service-account.json}
+    path: firebase-service-account.json
     json: ${FIREBASE_CREDENTIALS_JSON:}
