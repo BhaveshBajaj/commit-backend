@@ -14,14 +14,25 @@ public interface UserSpaceRepository extends JpaRepository<UserSpace, Long> {
     boolean existsByUserIdAndSpaceIdAndStatus(Long userId, Long spaceId, MembershipStatus status);
     Optional<UserSpace> findByUserIdAndSpaceId(Long userId, Long spaceId);
     List<UserSpace> findByUserIdAndStatus(Long userId, MembershipStatus status);
+    
+    @Query("SELECT us FROM UserSpace us JOIN FETCH us.space WHERE us.user.id = :userId AND us.status = :status")
+    List<UserSpace> findByUserIdAndStatusWithSpaceOnly(@Param("userId") Long userId, @Param("status") MembershipStatus status);
+    
     Optional<UserSpace> findByIdAndUserId(Long id, Long userId);
     
+    @Query("SELECT us FROM UserSpace us JOIN FETCH us.space s JOIN FETCH s.createdBy WHERE us.user.id = :userId AND us.status = :status")
+    List<UserSpace> findByUserIdAndStatusWithSpace(@Param("userId") Long userId, @Param("status") MembershipStatus status);
+    
     List<UserSpace> findBySpaceIdAndStatus(Long spaceId, MembershipStatus status);
+    
+    @Query("SELECT us FROM UserSpace us JOIN FETCH us.user WHERE us.space.id = :spaceId AND us.status = :status")
+    List<UserSpace> findBySpaceIdAndStatusWithUser(@Param("spaceId") Long spaceId, @Param("status") MembershipStatus status);
+    
     int countBySpaceIdAndStatus(Long spaceId, MembershipStatus status);
     
-    @Query("SELECT us FROM UserSpace us WHERE us.space.id = :spaceId AND us.status = :status " +
-           "AND (LOWER(us.user.name) LIKE LOWER(CONCAT('%', :query, '%')) " +
-           "OR LOWER(us.user.email) LIKE LOWER(CONCAT('%', :query, '%')))")
+    @Query("SELECT us FROM UserSpace us JOIN FETCH us.user u WHERE us.space.id = :spaceId AND us.status = :status " +
+           "AND (LOWER(u.name) LIKE LOWER(CONCAT('%', :query, '%')) " +
+           "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :query, '%')))")
     List<UserSpace> searchMembersByQuery(@Param("spaceId") Long spaceId, 
                                          @Param("status") MembershipStatus status,
                                          @Param("query") String query);

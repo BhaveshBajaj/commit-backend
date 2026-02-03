@@ -212,7 +212,7 @@ public class CommitmentService {
         if (!userSpaceRepository.existsByUserIdAndSpaceIdAndStatus(userId, spaceId, MembershipStatus.APPROVED)) {
             throw new UnauthorizedException("User not member of space");
         }
-        return commitmentRepository.findBySpaceId(spaceId).stream()
+        return commitmentRepository.findBySpaceIdWithDetails(spaceId).stream()
             .map(this::toResponse)
             .collect(Collectors.toList());
     }
@@ -231,7 +231,7 @@ public class CommitmentService {
             throw new UnauthorizedException("User not member of space");
         }
         
-        return eventRepository.findByCommitmentIdOrderByCreatedAtAsc(commitmentId).stream()
+        return eventRepository.findByCommitmentIdWithActorOrderByCreatedAtAsc(commitmentId).stream()
             .map(this::toHistoryResponse)
             .collect(Collectors.toList());
     }
@@ -271,7 +271,7 @@ public class CommitmentService {
     }
 
     private CommitmentResponse toResponse(Commitment commitment) {
-        List<ApproverResponse> approvers = approverRepository.findByCommitmentId(commitment.getId())
+        List<ApproverResponse> approvers = approverRepository.findByCommitmentIdWithUser(commitment.getId())
             .stream()
             .map(a -> new ApproverResponse(a.getUser().getId(), a.getUser().getName(), a.getStatus().name(), a.getActedAt()))
             .collect(Collectors.toList());

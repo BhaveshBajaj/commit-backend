@@ -106,7 +106,7 @@ public class SpaceService {
 
     public List<InviteResponse> getPendingInvites(Long userId) {
         getUser(userId);
-        return userSpaceRepository.findByUserIdAndStatus(userId, MembershipStatus.PENDING).stream()
+        return userSpaceRepository.findByUserIdAndStatusWithSpaceOnly(userId, MembershipStatus.PENDING).stream()
             .map(this::toInviteResponse)
             .collect(Collectors.toList());
     }
@@ -140,7 +140,7 @@ public class SpaceService {
 
     public List<SpaceResponse> getUserSpaces(Long userId) {
         getUser(userId);
-        return userSpaceRepository.findByUserIdAndStatus(userId, MembershipStatus.APPROVED).stream()
+        return userSpaceRepository.findByUserIdAndStatusWithSpace(userId, MembershipStatus.APPROVED).stream()
             .map(us -> toResponse(us.getSpace()))
             .collect(Collectors.toList());
     }
@@ -163,7 +163,7 @@ public class SpaceService {
             throw new UnauthorizedException("User not member of space");
         }
         
-        return userSpaceRepository.findBySpaceIdAndStatus(spaceId, MembershipStatus.APPROVED).stream()
+        return userSpaceRepository.findBySpaceIdAndStatusWithUser(spaceId, MembershipStatus.APPROVED).stream()
             .map(us -> toMemberResponse(us, space))
             .collect(Collectors.toList());
     }
@@ -178,7 +178,7 @@ public class SpaceService {
         
         List<UserSpace> members;
         if (query == null || query.trim().isEmpty()) {
-            members = userSpaceRepository.findBySpaceIdAndStatus(spaceId, MembershipStatus.APPROVED);
+            members = userSpaceRepository.findBySpaceIdAndStatusWithUser(spaceId, MembershipStatus.APPROVED);
         } else {
             members = userSpaceRepository.searchMembersByQuery(spaceId, MembershipStatus.APPROVED, query.trim());
         }
